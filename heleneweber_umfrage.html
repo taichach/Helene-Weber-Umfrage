@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forderungen im Wandel – Helene Weber</title>
+    <style>
+        /* CSS-Teil */
+        :root {
+            --color-past: #004d40; /* Dunkles Petrol/Grün für Vergangenheit */
+            --color-present: #ff8f00; /* Orange/Gelb für Gegenwart */
+            --color-bg: #f5f5f5;
+            --color-text: #333;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            scroll-behavior: smooth;
+        }
+
+        .scene {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden; /* Für den Blättereffekt */
+        }
+
+        .scene h1, .scene h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .past, .present {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+        }
+
+        .past {
+            background-color: var(--color-past);
+            color: white;
+            z-index: 10;
+        }
+
+        .present {
+            background-color: white;
+            color: var(--color-text);
+            border-left: 5px solid var(--color-present);
+            opacity: 0; /* Standardmäßig unsichtbar */
+            transform: translateY(50px);
+        }
+
+        .present.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Spezielles Styling für die letzte Szene */
+        #abschlussszene {
+            background-color: var(--color-past);
+            color: white;
+        }
+
+        .bewertung {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            border-top: 2px dashed #ccc;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .bewertung.visible {
+            opacity: 1;
+        }
+
+        .slider-container {
+            width: 80%;
+            max-width: 600px;
+            margin: 30px auto;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 15px;
+            background: linear-gradient(to right, red 0%, yellow 50%, green 100%);
+            border-radius: 5px;
+            outline: none;
+            transition: opacity .2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: white;
+            border: 3px solid var(--color-present);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .rating-display {
+            font-size: 1.2em;
+            margin-top: 15px;
+            font-weight: bold;
+            color: var(--color-present);
+        }
+
+        .next-scene-button {
+            padding: 10px 20px;
+            margin-top: 30px;
+            background-color: var(--color-present);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s;
+        }
+
+        .next-scene-button:hover {
+            background-color: #e67e22;
+        }
+        
+        /* Willkommensszene */
+        #willkommen {
+            background-color: var(--color-past);
+            color: white;
+            text-align: center;
+        }
+        
+        .next-scene-button-start {
+            background-color: white;
+            color: var(--color-past);
+        }
+
+        /* Navigationspfeile (minimalistisch für die Ausstellung) */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 2em;
+            color: var(--color-past);
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        
+        .scroll-indicator:hover {
+            opacity: 0.8;
+        }
+        
+        /* Titelzeile für die letzte Szene */
+        #abschlussszene h2 {
+            color: var(--color-present);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="willkommen" class="scene" data-scene-id="0">
+        <h1>Forderungen im Wandel</h1>
+        <h2>Von Vision zu Realität: Helene Weber und die Gleichberechtigung</h2>
+        <p>Blättern oder scrollen Sie durch die Szenen, um Vergangenheit und Gegenwart zu vergleichen.</p>
+        <button class="next-scene-button next-scene-button-start" onclick="scrollToScene(1)">Ausstellung starten</button>
+    </div>
+
+    <div id="szene-1" class="scene" data-scene-id="1">
+        <h2>Forderung 1: Gleicher Lohn für gleiche Arbeit</h2>
+        
+        <div class="past" id="past-1">
+            <h3>Historische Vision (Helene Weber, um 1920/1950)</h3>
+            <p>"Der Wert der weiblichen Arbeit ist dem der männlichen gleichzusetzen." – Forderung nach Überwindung von Lohngefällen, die Frauen in vielen Berufen, auch im öffentlichen Dienst, benachteiligten. Ziel: Wirtschaftliche Unabhängigkeit und Anerkennung der Leistung, unabhängig vom Geschlecht.</p>
+        </div>
+
+        <div class="present" id="present-1">
+            <h3>Die heutige Realität (2025)</h3>
+            <p><strong>Fakt:</strong> Der Gender Pay Gap in Deutschland beträgt laut aktuellen Daten noch immer ca. 18% (unbereinigt, Stand 2024). Bei gleicher Qualifikation und Tätigkeit ist die Lücke kleiner, aber messbar.</p>
+            <p><strong>Stimmlage:</strong> Trotz rechtlicher Verankerung (Entgelttransparenzgesetz) kämpfen viele Frauen weiterhin mit strukturellen Ungleichheiten wie der "gläsernen Decke" und der ungleichen Verteilung von Sorgearbeit.</p>
+            <small>Quelle: Statistisches Bundesamt / UN Women</small>
+        </div>
+
+        <div class="bewertung" id="bewertung-1">
+            <h4>Wie würdest du den Fortschritt dieser Forderung heute bewerten?</h4>
+            <div class="slider-container">
+                <input type="range" min="0" max="100" value="50" class="rating-slider" data-scene="1" oninput="updateRating(this)">
+                <div class="slider-labels">
+                    <span>Vision verfehlt</span>
+                    <span>Mittlerer Fortschritt</span>
+                    <span>Vision erfüllt</span>
+                </div>
+                <div class="rating-display" id="rating-1">Aktuelle Bewertung: Mittelmäßig</div>
+            </div>
+            <button class="next-scene-button" onclick="scrollToScene(2)" disabled>Zur nächsten Forderung</button>
+        </div>
+    </div>
+
+    <div id="szene-2" class="scene" data-scene-id="2">
+        <h2>Forderung 2: Politische Teilhabe</h2>
+        
+        <div class="past" id="past-2">
+            <h3>Historische Vision (Helene Weber, um 1948)</h3>
+            <p>"Der reine Männerstaat ist das Verderben der Völker." – Helene Weber, eine der vier "Mütter des Grundgesetzes", forderte vehement die gleichberechtigte Mitwirkung von Frauen in allen politischen Gremien, von der Kommune bis zum Bundestag. Sie unterstützte Art. 3 Abs. 2 GG ("Männer und Frauen sind gleichberechtigt").</p>
+        </div>
+
+        <div class="present" id="present-2">
+            <h3>Die heutige Realität (2025)</h3>
+            <p><strong>Fakt:</strong> Der Frauenanteil im Deutschen Bundestag liegt bei ca. 35%. In Kommunalparlamenten ist der Anteil oft noch geringer. Deutschland hinkt im internationalen Vergleich hinterher.</p>
+            <p><strong>Stimmlage:</strong> Die Debatte um Paritätsgesetze und Quoten zeigt, dass die volle Teilhabe noch nicht selbstverständlich ist. Frauenpolitik ist nicht mehr Nische, sondern ein zentrales Feld der Demokratie.</p>
+            <small>Quelle: Deutscher Bundestag / EAF Berlin</small>
+        </div>
+
+        <div class="bewertung" id="bewertung-2">
+            <h4>Wie würdest du den Fortschritt dieser Forderung heute bewerten?</h4>
+            <div class="slider-container">
+                <input type="range" min="0" max="100" value="50" class="rating-slider" data-scene="2" oninput="updateRating(this)">
+                <div class="slider-labels">
+                    <span>Vision verfehlt</span>
+                    <span>Mittlerer Fortschritt</span>
+                    <span>Vision erfüllt</span>
+                </div>
+                <div class="rating-display" id="rating-2">Aktuelle Bewertung: Mittelmäßig</div>
+            </div>
+            <button class="next-scene-button" onclick="scrollToScene(3)" disabled>Zur Auswertung</button>
+        </div>
+    </div>
+
+    <div id="abschlussszene" class="scene" data-scene-id="3">
+        <h1>Abschluss</h1>
+        <h2>So siehst du den Fortschritt der Gleichberechtigung im Jahr 2025</h2>
+        <p>Vielen Dank für deine Bewertung. Hier ist das Gesamtbild:</p>
+        <div id="gesamtauswertung" style="margin-top: 30px; font-size: 1.2em; max-width: 600px; text-align: left; width: 100%;">
+            </div>
+        <p style="margin-top: 50px;">Durch den Kontrast von Vision und Realität erkennen wir: Der Wandel ist im Gange, aber die Forderungen von Helene Weber bleiben auch heute noch relevant.</p>
+    </div>
+    
+    <div id="scroll-arrow" class="scroll-indicator" onclick="scrollToNextScene()" title="Zur nächsten Szene scrollen">
+        &#x25BC;
+    </div>
+
+
+    <script>
+        // JavaScript-Teil
+        
+        const totalScenes = 4; // 0 bis 3
+        let currentScene = 0;
+        let ratings = {}; // Speichert die Bewertungen
+
+        // Text-Labels für den Slider
+        const ratingTexts = [
+            "Vision verfehlt", 
+            "Stark enttäuschend", 
+            "Deutlich zu wenig", 
+            "Geringer Fortschritt", 
+            "Mäßiger Fortschritt", 
+            "Mittlerer Fortschritt", 
+            "Guter Fortschritt", 
+            "Weitestgehend erfüllt", 
+            "Fast erfüllt", 
+            "Vollständig erfüllt"
+        ];
+        
+        // Funktion zur Aktualisierung des Slider-Werts
+        function updateRating(slider) {
+            const sceneId = slider.dataset.scene;
+            const value = parseInt(slider.value);
+            const display = document.getElementById(`rating-${sceneId}`);
+            
+            // Text-Auswahl basierend auf 10er-Schritten
+            const textIndex = Math.floor(value / 10);
+            display.textContent = `Aktuelle Bewertung: ${ratingTexts[Math.min(textIndex, ratingTexts.length - 1)]}`;
+            
+            ratings[sceneId] = value; // Bewertung speichern
+            
+            // Button zur nächsten Szene freischalten
+            const button = document.querySelector(`#bewertung-${sceneId} .next-scene-button`);
+            if (button) {
+                button.disabled = false;
+            }
+        }
+
+        // Funktion zum Scrollen zur Szene
+        function scrollToScene(sceneIndex) {
+            const sceneElement = document.querySelector(`[data-scene-id="${sceneIndex}"]`);
+            if (sceneElement) {
+                sceneElement.scrollIntoView({ behavior: 'smooth' });
+                currentScene = sceneIndex;
+                checkVisibility();
+            }
+        }
+        
+        // Funktion zum Scrollen zur nächsten Szene
+        function scrollToNextScene() {
+            if (currentScene < totalScenes - 1) {
+                scrollToScene(currentScene + 1);
+            }
+        }
+
+        // Sichtbarkeitsprüfung beim Scrollen (Core-Mechanik: Vergangenheit/Gegenwart)
+        function checkVisibility() {
+            const windowHeight = window.innerHeight;
+            const scrollY = window.scrollY;
+
+            // Iteriere über alle Szenen (außer Willkommen/Abschluss)
+            for (let i = 1; i < totalScenes - 1; i++) {
+                const scene = document.getElementById(`szene-${i}`);
+                if (!scene) continue;
+
+                const sceneTop = scene.offsetTop;
+                const sceneBottom = sceneTop + scene.offsetHeight;
+                
+                // Szene ist im Viewport
+                if (scrollY + windowHeight / 2 > sceneTop && scrollY < sceneBottom) {
+                    currentScene = i; // Aktuelle Szene setzen
+                    
+                    const presentDiv = document.getElementById(`present-${i}`);
+                    const bewertungDiv = document.getElementById(`bewertung-${i}`);
+
+                    // Berechnung: Wie weit ist die Szene hereingescrollt? (0 = oben, 1 = unten)
+                    const scrollProgress = Math.max(0, Math.min(1, (scrollY - sceneTop + windowHeight * 0.7) / (scene.offsetHeight / 2)));
+
+                    // 1. Gegenwart (present) einblenden, wenn etwa 30% gescrollt
+                    if (scrollProgress > 0.3 && presentDiv && !presentDiv.classList.contains('visible')) {
+                        presentDiv.classList.add('visible');
+                    }
+                    
+                    // 2. Bewertung (bewertung) einblenden, wenn etwa 70% gescrollt
+                    if (scrollProgress > 0.7 && bewertungDiv && !bewertungDiv.classList.contains('visible')) {
+                        bewertungDiv.classList.add('visible');
+                    }
+                }
+            }
+            
+            // Sonderfall: Abschluss-Szene
+            if (currentScene === totalScenes - 1) {
+                generateSummary();
+                document.getElementById('scroll-arrow').style.display = 'none';
+            } else {
+                document.getElementById('scroll-arrow').style.display = 'block';
+            }
+        }
+        
+        // Funktion zur Erzeugung der Abschluss-Auswertung
+        function generateSummary() {
+            const summaryDiv = document.getElementById('gesamtauswertung');
+            if (summaryDiv.innerHTML !== '') return; // Nur einmal generieren
+
+            let output = '<ul>';
+            let totalRating = 0;
+            let count = 0;
+            
+            // Forderung 1
+            const rating1 = ratings['1'] !== undefined ? ratings['1'] : 50;
+            output += `<li><strong>Forderung 1 ("Gleicher Lohn"):</strong> ${rating1} / 100 Punkte (${ratingTexts[Math.floor(rating1 / 10)]})</li>`;
+            totalRating += rating1;
+            count++;
+            
+            // Forderung 2
+            const rating2 = ratings['2'] !== undefined ? ratings['2'] : 50;
+            output += `<li><strong>Forderung 2 ("Politische Teilhabe"):</strong> ${rating2} / 100 Punkte (${ratingTexts[Math.floor(rating2 / 10)]})</li>`;
+            totalRating += rating2;
+            count++;
+            
+            const average = count > 0 ? Math.round(totalRating / count) : 50;
+            
+            output += '</ul>';
+            output += `<h3 style="margin-top: 20px;">Gesamtfortschritt: ${average} / 100 Punkte (${ratingTexts[Math.floor(average / 10)]})</h3>`;
+            
+            summaryDiv.innerHTML = output;
+        }
+
+        // Event Listener für Scroll- und Ladeereignisse
+        window.addEventListener('scroll', checkVisibility);
+        window.addEventListener('load', () => {
+             // Initial die erste Szene als aktuell setzen
+             currentScene = 0;
+             checkVisibility(); // Prüft die Sichtbarkeit beim Laden
+        });
+
+    </script>
+
+</body>
+</html>
